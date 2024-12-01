@@ -1,0 +1,64 @@
+﻿@page "/listborrowedbooks"
+@using Lab62910.Data
+@using Lab62910.Services
+
+@inject IJSRuntime JSRuntime
+@inject IUserService UserService
+@inject IBorrowService BorrowService
+@inject IBookService BookService
+
+<h3>Borrowed Books</h3>
+
+@foreach (var entry in borrowedBooks)
+{
+    <div>
+        <p>User: @entry.Key.Name</p>
+        <ul>
+            @foreach (var book in entry.Value)
+            {
+                <li>@book.Title by @book.Author (ISBN: @book.ISBN)</li>
+            }
+        </ul>
+    </div>
+}
+
+@code {
+    private string userName;
+    private Dictionary<User, List<Book>> borrowedBooks = new Dictionary<User, List<Book>>();
+    private string resultMessage;
+
+    private Dictionary<Lab62910.Data.User, List<Lab62910.Data.Book>> ListBorrowedBooks(string userName)
+    {
+        Dictionary<Lab62910.Data.User, List<Lab62910.Data.Book>> userBookDictionary = new Dictionary<Lab62910.Data.User, List<Lab62910.Data.Book>>();
+        string resultMessage = "";
+
+        // Find the user by name
+        User user = UserService.GetUserByName(userName);
+
+        if (user != null)
+        {
+            // Get borrowed books for the user
+            List<Lab62910.Data.Book> borrowedBooks = user.BorrowedBooks;
+
+            if (borrowedBooks != null && borrowedBooks.Count > 0)
+            {
+                userBookDictionary.Add(user, borrowedBooks);
+                resultMessage = $"Borrowed books listed for {user.Name}.";
+            }
+            else
+            {
+                resultMessage = $"No borrowed books found for {user.Name}.";
+            }
+        }
+        else
+        {
+            resultMessage = $"User with name '{userName}' not found.";
+        }
+
+        // You can return the dictionary or resultMessage or both based on your requirements
+        return userBookDictionary;
+    }
+
+}
+
+
