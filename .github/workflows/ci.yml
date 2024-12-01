@@ -13,7 +13,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      Solution_Name: Lab6-2910.sln        
+      Solution_Name: Lab6.sln        
       Test_Project_Path: TestProject/TestProject.csproj 
 
     steps:
