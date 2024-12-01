@@ -1,0 +1,35 @@
+name: .NET CI Workflow
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: windows-latest
+
+    env:
+      Solution_Name: Lab6-2910.sln        
+      Test_Project_Path: TestProject/TestProject.csproj # Use the correct relative path to your test project
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 6.0 
+
+    - name: Restore dependencies
+      run: dotnet restore ${{ env.Solution_Name }}
+
+    - name: Build the project
+      run: dotnet build ${{ env.Solution_Name }} --configuration Release
+
+    - name: Run unit tests
+      run: dotnet test ${{ env.Test_Project_Path }} --verbosity normal
